@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>User Login - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>User Login</h1>
+        <hr>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <!-- End of Flash messages -->
+        <form method="post" action="/user/login/process">
+            <label for="id">
+                ID <input type="text" name="id" id="id" required minlength="6" maxlength="20">
+            </label>
+            <br>
+            <label for="passwd">
+                Password <input type="password" name="passwd" id="passwd" required minlength="6" maxlength="20">
+            </label>
+            <br>
+            <input type="submit" value="Login">
+        </form>
+        <br>
+        <a href="/user/signup"><button>Sign Up</button></a>
+    </body>
+</html>
