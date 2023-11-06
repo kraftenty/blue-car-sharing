@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Account - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Account</h1>
+        <hr>
+        Your Account : {{ session['user_session'][0] }}<br>
+        <a href="/user/account/edit"><button>Edit my Account Information</button></a>
+        <a href="/user/account/delete"><button>Delete my Account</button></a>
+        <a href="/user"><button>Back</button></a>
+    </body>
+</html>

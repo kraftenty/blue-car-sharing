@@ -5,8 +5,13 @@
         <title>User - Blue Car Sharing</title>
     </head>
     <body>
-        <h1>Hello, {{ session['user'][1] }}!</h1>
+        <h1>Hello, {{ session['user_session'][0] }}!</h1>
         <hr>
+        <button>find car</button><br>
+        <button>my reservation</button><br>
+        <button>smart key</button><br>
+        <button>my subscription</button><br>
+        <a href="/user/account"><button>my account</button></a><br>
         <a href="/user/logout"><button>Logout</button></a>
     </body>
 </html>

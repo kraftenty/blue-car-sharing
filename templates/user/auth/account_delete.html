@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Delete Account - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>DeleteAccount</h1>
+        <hr>
+        Are you sure to delete your account : {{ session['user_session'][0] }}?<br>
+        <a href="/user/account/delete/process"><button>YES</button></a>
+        <a href="/user/account"><button>Back</button></a>
+    </body>
+</html>

@@ -7,6 +7,17 @@
     <body>
         <h1>Sign Up</h1>
         <hr>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <!-- End of Flash messages -->
         <form method="post" action="/user/signup/process">
             <!--USER TABLE-->
             <h3>User Information</h3>
@@ -53,6 +64,6 @@
             <br><br>
             <input type="submit" value="Sign Up">
         </form>
-        <a href="/user/login"><button>Back</button></a>
+        <a href="/user"><button>Back</button></a>
     </body>
 </html>

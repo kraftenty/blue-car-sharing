@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit Account- Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Edit Account</h1>
+        <hr>
+        <form method="post" action="/user/account/edit/process">
+            <!--USER TABLE-->
+            <h3>User Information</h3>
+            <label for="id">
+                ID <input type="text" name="id" id="id" value="{{ session['user_session'][0] }}" disabled> You cannot change your ID.
+            </label>
+            <br>
+            <label for="name">
+                Name <input type="text" name="name" id="name" required maxlength="20" value="{{ user[0] }}">
+            </label>
+            <br>
+            <label for="passwd">
+                Password (min:6, max:20)<input type="text" name="passwd" id="passwd" required minlength="6" maxlength="20" value="{{ user[1] }}">
+            </label>
+            <br>
+            <label for="phone">
+                Phone (01012345678) <input type="text" name="phone" id="phone" required minlength="11" maxlength="11" value="{{ user[2] }}">
+            </label>
+            <br>
+            <label for="birthday">
+                Birthday <input type="date" name="birthday" id="birthday" required value="{{ user[3] }}">
+            </label>
+            <!--LICENSE TABLE-->
+            <h3>License Information</h3>
+            <label for="license_num">
+                License Number (12 numbers)<input type="text" name="license_num" id="license_num" required minlength="12" maxlength="12" value="{{ license[0] }}">
+            </label>
+            <br>
+            <label for="expiration_date">
+                License Expiration Date <input type="date" name="expiration_date" id="expiration_date" required value="{{ license[1] }}">
+            </label>
+            <!--PAYMENT TABLE-->
+            <h3>Payment Information</h3>
+            <label for="card_num">
+                Card Number (16 numbers)<input type="text" name="card_num" id="card_num" required minlength="16" maxlength="16" value="{{ payment[0] }}">
+            </label>
+            <br>
+            <label for="card_valid_thru">
+                Card Valid Thru (01/30)<input type="text" name="card_valid_thru" id="card_valid_thru" required minlength="5" maxlength="5" value="{{ payment[1] }}">
+            </label>
+            <label for="card_cvc">
+                Card CVC number (123)<input type="text" name="card_cvc" id="card_cvc" required minlength="3" maxlength="3" value="{{ payment[2] }}">
+            </label>
+            <br><br>
+            <input type="submit" value="Edit">
+        </form>
+        <a href="/user/account"><button>Back</button></a>
+    </body>
+</html>
