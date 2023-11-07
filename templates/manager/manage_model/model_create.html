@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Create Model - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Create Model</h1>
+        <hr>
+         <!-- Flash messages -->
+         {% with messages = get_flashed_messages(with_categories=true) %}
+         {% if messages %}
+         <ul class="flashes">
+             {% for category, message in messages %}
+             <li class="{{ category }}">{{ message }}</li>
+             {% endfor %}
+         </ul>
+         {% endif %}
+         {% endwith %}
+         <!-- End of Flash messages -->
+        <form method="post" action="/manager/managemodel/create/process">
+            <table>
+                <tr>
+                    <td>id</td>
+                    <!--min:0이상, step: 정수로만-->
+                    <td><input type="number" name="id" required min="0" step="1"></td>
+                </tr>
+                <tr>
+                    <td>manufacturer</td>
+                    <td><input type="text" name="manufacturer" required></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td><input type="text" name="name" required></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td><input type="text" name="type" required></td>
+                </tr>
+                <tr>
+                    <td>capacity</td>
+                    <td><input type="number" name="capacity" required min="0" step="1"></td>
+                </tr>
+                <tr>
+                    <td>drive_range</td>
+                    <td><input type="number" name="drive_range" required min="0" step="1"></td>
+                </tr>
+                <tr>
+                    <td>price_per_day</td>
+                    <td><input type="number" name="price_per_day" required min="0" step="1"></td>
+                </tr>
+            </table>
+            <input type="submit" value="Create">
+        </form>
+        <a href="/manager/managemodel"><button>Back</button></a>
+    </body>
+</html>

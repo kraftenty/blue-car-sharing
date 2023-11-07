@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import data.dataInserter as dataInserter
 
 db_filename = 'data/data.db'
 
@@ -46,7 +47,6 @@ def initialize():
         CREATE TABLE IF NOT EXISTS car (
             number VARCHAR PRIMARY KEY NOT NULL,
             model_id INTEGER NOT NULL,
-            price INTEGER NOT NULL,
             zone_id INTEGER NOT NULL,
             FOREIGN KEY (model_id) REFERENCES model(id),
             FOREIGN KEY (zone_id) REFERENCES zone(id)
@@ -60,7 +60,8 @@ def initialize():
             name VARCHAR NOT NULL,
             type VARCHAR NOT NULL,
             capacity INTEGER NOT NULL,
-            drive_range INTEGER NOT NULL
+            drive_range INTEGER NOT NULL,
+            price_per_day INTEGER NOT NULL
         );
     ''')
     # Create zone table
@@ -100,6 +101,9 @@ def initialize():
             FOREIGN KEY (car_number) REFERENCES car(number)
         );
     ''')
-
-    print('[INFO] Database initialized.')
     conn.close()
+    print('[INFO] Database initialized.')
+
+    print('[INFO] Inserting data...')
+    dataInserter.insertData()
+    print('[INFO] Data inserted.')

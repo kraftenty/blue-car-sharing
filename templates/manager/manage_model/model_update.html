@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Update Model - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Update Model</h1>
+        <hr>
+        <form action="/manager/managemodel/update/process/{{ selected_model_data[0] }}" method="POST">
+            <table>
+                <tr>
+                    <td>ID (Cannot Edit)</td>
+                    <td><input type="number" name="id" value="{{ selected_model_data[0] }}" disabled></td>
+                </tr>
+                <tr>
+                    <td>Manufacturer</td>
+                    <td><input type="text" name="manufacturer" value="{{ selected_model_data[1] }}"></td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td><input type="text" name="name" value="{{ selected_model_data[2] }}"></td>
+                </tr>
+                <tr>
+                    <td>Type</td>
+                    <td><input type="text" name="type" value="{{ selected_model_data[3] }}"></td>
+                </tr>
+                <tr>
+                    <td>Capacity</td>
+                    <td><input type="number" name="capacity" value="{{ selected_model_data[4] }}" min="0" step="1"></td>
+                </tr>
+                <tr>
+                    <td>Drive Range</td>
+                    <td><input type="number" name="drive_range" value="{{ selected_model_data[5] }}" min="0" step="1"></td>
+                </tr>
+                <tr>
+                    <td>Price Per Day</td>
+                    <td><input type="number" name="price_per_day" value="{{ selected_model_data[6] }}" min="0" step="1"></td>
+                </tr>
+            </table>
+            <br>
+            <input type="submit" value="UPDATE">
+        </form>
+        <a href="/manager/managemodel"><button>CANCEL</button></a>
+    </body>
+</html>

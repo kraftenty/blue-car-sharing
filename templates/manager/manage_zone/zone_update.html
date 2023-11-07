@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Update Zone - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Update Zone</h1>
+        <hr>
+        <form action="/manager/managezone/update/process/{{ selected_zone_data[0] }}" method="POST">
+            <table>
+                <tr>
+                    <td>ID (Cannot Edit)</td>
+                    <td><input type="text" name="id" value="{{ selected_zone_data[0] }}" disabled></td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td><input type="text" name="city" value="{{ selected_zone_data[1] }}" required></td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td><input type="text" name="name" value="{{ selected_zone_data[2] }}" required></td>
+                </tr>
+            </table>
+            <br>
+            <input type="submit" value="UPDATE">
+        </form>
+        <a href="/manager/managezone"><button>CANCEL</button></a>
+    </body>
+</html>

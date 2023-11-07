@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Create Zone - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Create Zone</h1>
+        <hr>
+         <!-- Flash messages -->
+         {% with messages = get_flashed_messages(with_categories=true) %}
+         {% if messages %}
+         <ul class="flashes">
+             {% for category, message in messages %}
+             <li class="{{ category }}">{{ message }}</li>
+             {% endfor %}
+         </ul>
+         {% endif %}
+         {% endwith %}
+         <!-- End of Flash messages -->
+        <form method="post" action="/manager/managezone/create/process">
+            <table>
+                <tr>
+                    <td>id</td>
+                    <!--min:0이상, step: 정수로만-->
+                    <td><input type="number" name="id" required min="0" step="1"></td>
+                </tr> 
+                <tr>
+                    <td>city</td>
+                    <!-- <td><input type="text" name="city" required></td> -->
+                    <td>
+                    <label for="city">Select City</label>
+                    <select id="city" name="city" required>
+                        <option value="Seoul">Seoul</option>
+                        <option value="Incheon">Incheon</option>
+                        <option value="Gyeonggi">Gyeonggi</option>
+                        <option value="Gangwon">Gangwon</option>
+                        <option value="ChungBuk">ChungBuk</option>
+                        <option value="ChungNam">ChungNam</option>
+                        <option value="Sejong">Sejong</option>
+                        <option value="Daejeon">Daejeon</option>
+                        <option value="GyeongBuk">GyeongBuk</option>
+                        <option value="GyeongNam">GyeongNa m</option>
+                        <option value="Daegu">Daegu</option>
+                        <option value="Ulsan">Ulsan</option>
+                        <option value="Busan">Busan</option>
+                        <option value="JeonBuk">JeonBuk</option>
+                        <option value="JeonNam">JeonNam</option>
+                        <option value="Gwangju">Gwangju</option>
+                    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td><input type="text" name="name" required></td>
+                </tr>
+            </table>
+            <input type="submit" value="Create">
+        </form>
+        <a href="/manager/managezone"><button>Back</button></a>
+    </body>
+</html>

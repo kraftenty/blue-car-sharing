@@ -8,6 +8,7 @@ main_bp = Blueprint('main', __name__)
 def root():
     return render_template('index.html')
 
+# user
 @main_bp.route('/user/login/process', methods=['POST'])
 def root_user_login_process():
     if request.method == 'POST':
@@ -37,7 +38,7 @@ def root_user_logout():
         session.pop('user_session', None)
         return redirect('/')
     else:
-        pass
+        return redirect('/user')
 
 @main_bp.route('/user/signup')
 def root_user_signup():
@@ -183,26 +184,426 @@ def root_user_account_delete_process():
     else:
         return render_template('user/auth/login_form.html')
 
-# manager
+# user subscription
+def isOnSubscribe(user_id): # return True if user is on subscribe
+    conn = sqlite3.connect('data/data.db')
+    cursor = conn.cursor()
+    cursor.execute('''SELECT ? FROM subscribe''', (user_id,))
+    ret = cursor.fetchone()
+    conn.close()
+    if ret:
+        return True
+    else:
+        return False
+
+@main_bp.route('/user/subscription')
+def root_user_subscription():
+    if session.get('user_session'):
+        user_id = session['user_session'][0]
+        if isOnSubscribe(user_id):
+            return render_template('user/subscription/on_subscribe.html')
+        else:
+            return render_template('user/subscription/recommend_subscribe.html')
+    else:
+        return render_template('user/auth/login_form.html')
+
+@main_bp.route('/user/subscription/process')
+def root_user_subscription_process():
+    if session.get('user_session'):
+        user_id = session['user_session'][0]
+        if not isOnSubscribe(user_id): # subscribe
+            conn = sqlite3.connect('data/data.db')
+            cursor = conn.cursor()
+            cursor.execute('''INSERT INTO subscribe (user_id) VALUES (?)''', (user_id,))
+            conn.commit()
+            conn.close()
+            return redirect('/user/subscription')
+        else: # unsubscribe
+            conn = sqlite3.connect('data/data.db')
+            cursor = conn.cursor()
+            cursor.execute('''DELETE FROM subscribe WHERE user_id=?''', (user_id,))
+            conn.commit()
+            conn.close()
+            return redirect('/user/subscription')
+    else:
+        return render_template('user/auth/login_form.html')
+
+# smartkey
+@main_bp.route('/user/smartkey')
+def root_user_smartkey():
+    if session.get('user_session'):
+        return render_template('user/smartkey/smartkey.html')
+    else:
+        return render_template('user/auth/login_form.html')
+
+# ------------------------------------------ manager
+# manager auth
+MANAGER_PASSWORD = 'manager1234'
+MANAGER_SESSION_VALUE = '1234ABCD'
+@main_bp.route('/manager')
+def root_manager_login():
+    if session.get('manager_session'):
+        return render_template('manager/manager.html')
+    else:
+        return render_template('manager/auth/login_form.html')
+
 @main_bp.route('/manager/login/process', methods=['POST'])
 def root_manager_login_process():
-    MANAGER_PASSWORD = 'manager1234'
-    MANAGER_SESSION_VALUE = '1234ABCD'
     if request.method == 'POST':
         password = request.form['password']
-
         if password == MANAGER_PASSWORD:
             print(f'[INFO] manager 인증 성공')
-            session['manager'] = MANAGER_SESSION_VALUE
+            session['manager_session'] = MANAGER_SESSION_VALUE
             return redirect('/manager')
         else:
             flash('Login Failed. Incorrect manager password', 'error')
     return render_template('manager/auth/login_form.html')
 
-
-@main_bp.route('/manager')
-def root_manager_login():
-    if session.get('manager'):
-        return render_template('manager/manager.html')
+@main_bp.route('/manager/logout')
+def root_manager_logout():
+    if session.get('manager_session'):
+        session.pop('manager_session', None)
+        return redirect('/')
+    else:
+        return redirect('/manager')
+    
+# manager manage user
+@main_bp.route('/manager/manageuser')
+def root_manager_manageuser():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT u.id, u.name, u.passwd, u.phone, u.birthday,
+                   l.license_num, l.expiration_date,
+                   p.card_num, p.card_valid_thru, p.card_cvc
+            FROM user AS u
+            INNER JOIN license AS l ON u.id = l.user_id
+            INNER JOIN payment AS p ON u.id = p.user_id
+        ''')
+        joined_user_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_user/manageuser.html',
+                                joined_user_data=joined_user_data)
     else:
         return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/manageuser/delete/<string:user_id>', methods=['GET'])
+def root_manager_manageuser_delete(user_id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''DELETE FROM user WHERE id=?''', (user_id,))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/manageuser')
+    else:   
+        return render_template('manager/auth/login_form.html')
+
+# manager manage model
+@main_bp.route('/manager/managemodel')
+def root_manager_managemodel():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM model''')
+        model_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_model/managemodel.html',
+                                model_data=model_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managemodel/update/<int:model_id>', methods=['GET'])
+def root_manager_managemodel_update(model_id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM model WHERE id=?''', (model_id,))
+        selected_model_data = cursor.fetchone()
+        conn.close()
+        return render_template('manager/manage_model/model_update.html',
+                                selected_model_data=selected_model_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managemodel/update/process/<int:model_id>', methods=['POST'])
+def root_manager_managemodel_update_process(model_id):
+    if session.get('manager_session') and request.method == 'POST':
+        model_manufacturer = request.form['manufacturer']
+        model_name = request.form['name']
+        model_type = request.form['type']
+        model_capacity = request.form['capacity']
+        model_drive_range = request.form['drive_range']
+        model_price_per_day = request.form['price_per_day']
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''UPDATE model 
+                            SET manufacturer=?, name=?, type=?, capacity=?, drive_range=?, price_per_day=?
+                            WHERE id=?''',
+                        (model_manufacturer, model_name, model_type, model_capacity, model_drive_range, model_price_per_day, model_id))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managemodel')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managemodel/delete/<string:user_id>', methods=['GET'])
+def root_manager_managemodel_delete(user_id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''DELETE FROM model WHERE id=?''', (user_id,))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managemodel')
+    else:   
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managemodel/create')
+def root_manager_managemodel_create():
+    if session.get('manager_session'):
+        return render_template('manager/manage_model/model_create.html')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managemodel/create/process', methods=['POST'])
+def root_manager_managemodel_create_process():
+    if session.get('manager_session') and request.method == 'POST':
+        # Check if id is already exists
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        model_id = request.form['id']
+        cursor.execute('''SELECT id FROM model WHERE id=?''', (model_id,))
+        existing_id = cursor.fetchone()
+        conn.close()
+        if existing_id:
+            flash('Model Create Failed. ID already exists.', 'error')
+            return render_template('manager/manage_model/model_create.html')
+        else:
+            conn = sqlite3.connect('data/data.db')
+            cursor = conn.cursor()
+            model_id = request.form['id']
+            model_manufacturer = request.form['manufacturer']
+            model_name = request.form['name']
+            model_type = request.form['type']
+            model_capacity = request.form['capacity']
+            model_drive_range = request.form['drive_range']
+            model_price_per_day = request.form['price_per_day']
+            cursor.execute('''INSERT INTO model VALUES (?, ?, ?, ?, ?, ?, ?)''',
+                (model_id, model_manufacturer, model_name,
+                model_type, model_capacity, model_drive_range, model_price_per_day)
+            )
+            conn.commit()
+            conn.close()
+            return redirect('/manager/managemodel')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+# manager manage zone
+@main_bp.route('/manager/managezone')
+def root_manager_managezone():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM zone''')
+        zone_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_zone/managezone.html',
+                                zone_data=zone_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managezone/update/<int:zone_id>', methods=['GET'])
+def root_manager_managezone_update(zone_id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM zone WHERE id=?''', (zone_id,))
+        selected_zone_data = cursor.fetchone()
+        conn.close()
+        return render_template('manager/manage_zone/zone_update.html',
+                                selected_zone_data=selected_zone_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managezone/update/process/<int:zone_id>', methods=['POST'])
+def root_manager_managezone_update_process(zone_id):
+    if session.get('manager_session') and request.method == 'POST':
+        zone_city = request.form['city']
+        zone_name = request.form['name']
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''UPDATE zone 
+                            SET city=?, name=?
+                            WHERE id=?''',
+                        (zone_city, zone_name, zone_id))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managezone')
+    else:
+        return render_template('manager/auth/login_form.html')
+    
+@main_bp.route('/manager/managezone/delete/<int:zone_id>', methods=['GET'])
+def root_manager_managezone_delete(zone_id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''DELETE FROM zone WHERE id=?''', (zone_id,))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managezone')
+    else:   
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managezone/create')
+def root_manager_managezone_create():
+    if session.get('manager_session'):
+        return render_template('manager/manage_zone/zone_create.html')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managezone/create/process', methods=['POST'])
+def root_manager_managezone_create_process():
+    if session.get('manager_session') and request.method == 'POST':
+        # Check if id is already exists
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        zone_id = request.form['id']
+        cursor.execute('''SELECT id FROM zone WHERE id=?''', (zone_id,))
+        existing_id = cursor.fetchone()
+        conn.close()
+        if existing_id:
+            flash('Zone Create Failed. ID already exists.', 'error')
+            return render_template('manager/manage_zone/zone_create.html')
+        else:
+            conn = sqlite3.connect('data/data.db')
+            cursor = conn.cursor()
+            zone_id = request.form['id']
+            zone_city = request.form['city']
+            zone_name = request.form['name']
+            cursor.execute('''INSERT INTO zone VALUES (?, ?, ?)''',
+                (zone_id, zone_city, zone_name)
+            )
+            conn.commit()
+            conn.close()
+            return redirect('/manager/managezone')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+# manager manage subscription
+@main_bp.route('/manager/managesubscription')
+def root_manager_managesubscription():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM subscribe''')
+        subscribe_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_subscription/managesubscription.html',
+                                subscribe_data=subscribe_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managesubscription/delete/<string:user_id>', methods=['GET'])
+def root_manager_managesubscription_delete(user_id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''DELETE FROM subscribe WHERE user_id=?''', (user_id,))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managesubscription')
+    else:   
+        return render_template('manager/auth/login_form.html')
+
+# manager manage car
+@main_bp.route('/manager/managecar')
+def root_manager_managecar():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM car''')
+        car_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_car/managecar.html',
+                                car_data=car_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managecar/update/<string:number>', methods=['GET'])
+def root_manager_managecar_update(number):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM car WHERE number=?''', (number,))
+        selected_car_data = cursor.fetchone()
+        conn.close()
+        return render_template('manager/manage_car/car_update.html',
+                                selected_car_data=selected_car_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+# @main_bp.route('/manager/managezone/update/process/<int:zone_id>', methods=['POST'])
+# def root_manager_managezone_update_process(zone_id):
+#     if session.get('manager_session') and request.method == 'POST':
+#         zone_city = request.form['city']
+#         zone_name = request.form['name']
+#         conn = sqlite3.connect('data/data.db')
+#         cursor = conn.cursor()
+#         cursor.execute('''UPDATE zone 
+#                             SET city=?, name=?
+#                             WHERE id=?''',
+#                         (zone_city, zone_name, zone_id))
+#         conn.commit()
+#         conn.close()
+#         return redirect('/manager/managezone')
+#     else:
+#         return render_template('manager/auth/login_form.html')
+    
+# @main_bp.route('/manager/managezone/delete/<int:zone_id>', methods=['GET'])
+# def root_manager_managezone_delete(zone_id):
+#     if session.get('manager_session'):
+#         conn = sqlite3.connect('data/data.db')
+#         cursor = conn.cursor()
+#         cursor.execute('''DELETE FROM zone WHERE id=?''', (zone_id,))
+#         conn.commit()
+#         conn.close()
+#         return redirect('/manager/managezone')
+#     else:   
+#         return render_template('manager/auth/login_form.html')
+
+# @main_bp.route('/manager/managezone/create')
+# def root_manager_managezone_create():
+#     if session.get('manager_session'):
+#         return render_template('manager/manage_zone/zone_create.html')
+#     else:
+#         return render_template('manager/auth/login_form.html')
+
+# @main_bp.route('/manager/managezone/create/process', methods=['POST'])
+# def root_manager_managezone_create_process():
+#     if session.get('manager_session') and request.method == 'POST':
+#         # Check if id is already exists
+#         conn = sqlite3.connect('data/data.db')
+#         cursor = conn.cursor()
+#         zone_id = request.form['id']
+#         cursor.execute('''SELECT id FROM zone WHERE id=?''', (zone_id,))
+#         existing_id = cursor.fetchone()
+#         conn.close()
+#         if existing_id:
+#             flash('Zone Create Failed. ID already exists.', 'error')
+#             return render_template('manager/manage_zone/zone_create.html')
+#         else:
+#             conn = sqlite3.connect('data/data.db')
+#             cursor = conn.cursor()
+#             zone_id = request.form['id']
+#             zone_city = request.form['city']
+#             zone_name = request.form['name']
+#             cursor.execute('''INSERT INTO zone VALUES (?, ?, ?)''',
+#                 (zone_id, zone_city, zone_name)
+#             )
+#             conn.commit()
+#             conn.close()
+#             return redirect('/manager/managezone')
+#     else:
+#         return render_template('manager/auth/login_form.html')
