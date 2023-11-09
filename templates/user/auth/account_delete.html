@@ -3,11 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>Delete Account - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>DeleteAccount</h1>
         <hr>
-        Are you sure to delete your account : {{ session['user_session'][0] }}?<br>
+        <p>Are you sure to delete your account : {{ session['user_session'][0] }}?</p>
         <a href="/user/account/delete/process"><button>YES</button></a>
         <a href="/user/account"><button>Back</button></a>
     </body>

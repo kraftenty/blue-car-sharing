@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>User Login - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>User Login</h1>
@@ -19,18 +20,20 @@
         {% endwith %}
         <!-- End of Flash messages -->
         <form method="post" action="/user/login/process">
-            <label for="id">
-                ID <input type="text" name="id" id="id" required minlength="6" maxlength="20">
-            </label>
-            <br>
-            <label for="passwd">
-                Password <input type="password" name="passwd" id="passwd" required minlength="6" maxlength="20">
-            </label>
-            <br>
+            <table>
+                <tr>
+                    <th>User ID</th>
+                    <td><input type="text" name="id" id="id" required minlength="6" maxlength="20"></td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td><input type="password" name="passwd" id="passwd" required minlength="6" maxlength="20"> </td>
+                </tr>
+            </table>
             <input type="submit" value="Login">
         </form>
-        <br>
-        <a href="/user/signup"><button>Sign Up</button></a><br><br>
+        <br><br>
+        <a href="/user/signup"><button>Sign Up</button></a>
         <a href="/"><button>Back</button></a>
     </body>
 </html>

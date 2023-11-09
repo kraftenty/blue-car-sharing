@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Find Car - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>Find Car</h1>
@@ -10,7 +11,7 @@
         <form method="GET" action="/user/findcar/select" onsubmit="return validateDates()">
             <table>
                 <tr>
-                    <td>Select City</td>
+                    <th>Select City</th>
                     <td>
                         <select id="city" required onchange="updateZones()">
                             <option value="" disabled selected>Select City</option>
@@ -21,19 +22,20 @@
                     </td>   
                 </tr>
                 <tr>
-                    <td>Select Zone</td>
+                    <th>Select Zone</th>
                     <td>
                         <select id="zone" name="zone_id" required>
                             <!-- Zone options will be dynamically populated here -->
                         </select>
+                        * Select City First! *
                     </td>
                 </tr>
                 <tr>
-                    <td>Start Date</td>
+                    <th>Start Date</th>
                     <td><input type="date" name="start_date" id="start_date" required></td>
                 </tr>
                 <tr>
-                    <td>End Date</td>
+                    <th>End Date</th>
                     <td><input type="date" name="end_date" id="end_date" required onchange="calc()"></td>
                 </tr>                 
             </table>

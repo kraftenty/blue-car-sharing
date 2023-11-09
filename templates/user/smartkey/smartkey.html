@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Smart key - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>Smart key</h1>
@@ -15,8 +16,8 @@
             <li>The amount paid : {{ reservation_data[5] }} WON</li>
         </ul>
         <h3>Smart Key</h3>
-        <button onclick="alert('Car Unlocked!')">UNLOCK</button>
-        <button onclick="alert('Car Locked!')">LOCK</button>
+        <button class="middle" onclick="alert('Car Unlocked!')">UNLOCK</button>
+        <button class="middle" onclick="alert('Car Locked!')">LOCK</button>
         <br><br>
         <button onclick="confirmCancel()">Cancel Reservation</button>
         <a href="/user"><button>Back</button></a>

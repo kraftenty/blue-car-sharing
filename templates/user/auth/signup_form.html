@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Sign Up - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>Sign Up</h1>
@@ -21,49 +22,58 @@
         <form method="post" action="/user/signup/process">
             <!--USER TABLE-->
             <h3>User Information</h3>
-            <label for="id">
-                ID (min:6, max:20)<input type="text" name="id" id="id" required minlength="6" maxlength="20">
-            </label>
-            <br>
-            <label for="name">
-                Name <input type="text" name="name" id="name" required maxlength="20">
-            </label>
-            <br>
-            <label for="passwd">
-                Password (min:6, max:20)<input type="password" name="passwd" id="passwd" required minlength="6" maxlength="20">
-            </label>
-            <br>
-            <label for="phone">
-                Phone (01012345678) <input type="text" name="phone" id="phone" required minlength="11" maxlength="11">
-            </label>
-            <br>
-            <label for="birthday">
-                Birthday <input type="date" name="birthday" id="birthday" required>
-            </label>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <td><input type="text" name="id" id="id" required minlength="6" maxlength="20"> (min:6, max:20)</td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td><input type="text" name="name" id="name" required maxlength="20"></td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td><input type="password" name="passwd" id="passwd" required minlength="6" maxlength="20"> (min:6, max:20)</td>
+                </tr>
+                <tr>
+                    <th>Phone</th>
+                    <td><input type="text" name="phone" id="phone" required minlength="11" maxlength="11"> (01012345678)</td>
+                </tr>
+                <tr>
+                    <th>Birthday</th>
+                    <td><input type="date" name="birthday" id="birthday" required></td>
+                </tr>
+            </table>
             <!--LICENSE TABLE-->
             <h3>License Information</h3>
-            <label for="license_num">
-                License Number (12 numbers)<input type="text" name="license_num" id="license_num" required minlength="12" maxlength="12">
-            </label>
-            <br>
-            <label for="expiration_date">
-                License Expiration Date <input type="date" name="expiration_date" id="expiration_date" required>
-            </label>
+            <table>
+                <tr>
+                    <th>License Number</th>
+                    <td><input type="text" name="license_num" id="license_num" required minlength="12" maxlength="12"> (12 numbers)</td>
+                </tr>
+                <tr>
+                    <th>License Expiration Date</th>
+                    <td><input type="date" name="expiration_date" id="expiration_date" required></td>
+                </tr>
+            </table>
             <!--PAYMENT TABLE-->
             <h3>Payment Information</h3>
-            <label for="card_num">
-                Card Number (16 numbers)<input type="text" name="card_num" id="card_num" required minlength="16" maxlength="16">
-            </label>
-            <br>
-            <label for="card_valid_thru">
-                Card Valid Thru (01/30)<input type="text" name="card_valid_thru" id="card_valid_thru" required minlength="5" maxlength="5">
-            </label>
-            <label for="card_cvc">
-                Card CVC number (123)<input type="text" name="card_cvc" id="card_cvc" required minlength="3" maxlength="3">
-            </label>
-            <br><br>
+            <table>
+                <tr>
+                    <th>Card Number</th>
+                    <td><input type="text" name="card_num" id="card_num" required minlength="16" maxlength="16"> (16 numbers)</td>
+                </tr>
+                <tr>
+                    <th>Card Valid Thru</th>
+                    <td><input type="text" name="card_valid_thru" id="card_valid_thru" required minlength="5" maxlength="5"> (01/30)</td>
+                </tr>
+                <tr>
+                    <th>Card CVC number</th>
+                    <td><input type="text" name="card_cvc" id="card_cvc" required minlength="3" maxlength="3"> (123)</td>
+                </tr>
+            </table>
             <input type="submit" value="Sign Up">
-        </form>
+        </form><br>
         <a href="/user"><button>Back</button></a>
     </body>
 </html>

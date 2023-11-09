@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Register Car - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_manager.css">
     </head>
     <body> 
         <h1>Register Car</h1>
@@ -21,7 +22,7 @@
         <form method="post" action="/manager/managecar/register/process">
             <table>
                 <tr>
-                    <td>number</td>
+                    <th>number</th>
                     <!--min:0이상, step: 정수로만-->
                     <td>
                         <input type="text" name="first_number" required minlength="1" maxlength="3">
@@ -34,7 +35,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>model</td>
+                    <th>model</th>
                     <td>
                     <select name="model_id" required>
                         {% for model in model_data %}
@@ -44,7 +45,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>zone</td>
+                    <th>zone</th>
                     <td>
                     <select name="zone_id" required>
                         {% for zone in zone_data %}

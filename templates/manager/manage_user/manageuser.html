@@ -3,9 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <title>Manage User - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_manager.css">
         <style>
             .scrollable-table {
-                max-height: 400px; /* 원하는 높이로 조정하세요 */
+                max-height: 400px;
                 overflow-y: auto;
                 width: 100%;
                 table-layout: fixed;
@@ -13,13 +14,18 @@
             table {
                 border : 1px solid black;
                 border-collapse : collapse;
-                width: 100%; /* 테이블의 너비를 100%로 설정하여 화면 너비에 맞게 확장 */
+                width: 100%;
+                background-color: white;
             }
             th, td {
                 border: 1px solid black;
-                width: auto; /* 각 셀의 너비를 자동 조정 (내용에 따라) */
-                padding: 8px; /* 셀의 패딩을 추가할 수 있음 (선택 사항) */
-                text-align: center; /* 셀 내용을 가운데 정렬 (선택 사항) */
+                width: auto;
+                padding: 1px;
+                text-align: center;
+            }
+            th {
+                background-color: black;
+                color: white;
             }
           </style>
     </head>

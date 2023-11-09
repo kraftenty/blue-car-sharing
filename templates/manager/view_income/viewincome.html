@@ -3,13 +3,22 @@
     <head>
         <meta charset="UTF-8">
         <title>View Income - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_manager.css"><!--공통스타일-->
     </head>
     <body>
         <h1>View Income</h1>
         <hr>
         <form method="post" action="/manager/viewincome/calculated" onsubmit="return validateDates()">
-            From : <input type="date" name="start_date" id="start_date" required><br>
-            To : <input type="date" name="end_date" id="end_date" required><br>
+            <table>
+                <tr>
+                    <th>From</th>
+                    <td><input type="date" name="start_date" id="start_date" required></td>
+                </tr>
+                <tr>
+                    <th>To</th>
+                    <td><input type="date" name="end_date" id="end_date" required></td>
+                </tr>
+            </table>
             <input type="submit" value="Search">
         </form>
         <br>

@@ -3,14 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <title>Subscription - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>Please Subscribe BLUEPASS!</h1>
         <hr>
-        Unlimited 50% discount on all reservation when subscribing!<br><br>
-        2,000 won per month. 
-        <button onclick="conf()">Subscribe</button><br>
-        <a href="/user"><button>Back</button></a>
+        <p>
+            Unlimited 50% discount on all reservation when subscribing!<br>
+            2,000 won per month. 
+        </p>
+        <button class="middle" onclick="conf()">Subscribe</button>
+        <a href="/user"><button class="middle">Back</button></a>
         <script>
             function conf() {
                 if (confirm("Do you want to subscribe?")) {

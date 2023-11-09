@@ -3,14 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>User - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css"><!--공통스타일-->
     </head>
     <body>
         <h1>Hello, {{ session['user_session'][0] }}!</h1>
         <hr>
-        <a href="/user/findcar"><button>find car</button><br></a>
-        <a href="/user/smartkey"><button>smart key</button><br></a>
-        <a href="/user/subscription"><button>my subscription</button><br></a>
-        <a href="/user/account"><button>my account</button></a><br>
-        <a href="/user/logout"><button>Logout</button></a>
+        <a href="/user/findcar"><button class="big">Find Car</button></a>
+        <a href="/user/smartkey"><button class="big">Smart Key</button></a>
+        <a href="/user/subscription"><button class="big">My Subscription</button></a><br>
+        <a href="/user/account"><button class="big">My Account</button></a>
+        <a href="/user/logout"><button class="big">Logout</button></a>
     </body>
 </html>

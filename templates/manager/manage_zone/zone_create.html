@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Create Zone - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_manager.css">
     </head>
     <body>
         <h1>Create Zone</h1>
@@ -21,15 +22,13 @@
         <form method="post" action="/manager/managezone/create/process">
             <table>
                 <tr>
-                    <td>id</td>
+                    <th>id</th>
                     <!--min:0이상, step: 정수로만-->
                     <td><input type="number" name="id" required min="0" step="1"></td>
                 </tr> 
                 <tr>
-                    <td>city</td>
-                    <!-- <td><input type="text" name="city" required></td> -->
+                    <th>city</th>
                     <td>
-                    <label for="city">Select City</label>
                     <select id="city" name="city" required>
                         <option value="Seoul">Seoul</option>
                         <option value="Incheon">Incheon</option>
@@ -51,7 +50,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>name</td>
+                    <th>name</th>
                     <td><input type="text" name="name" required></td>
                 </tr>
             </table>

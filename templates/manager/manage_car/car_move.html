@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Move Car - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_manager.css">
     </head>
     <body>
         <h1>Move Car</h1>
@@ -10,19 +11,19 @@
         <form action="/manager/managecar/move/process/{{ selected_car_data[0] }}" method="POST">
             <table>
                 <tr>
-                    <td>number</td>
+                    <th>number</th>
                     <td><input type="text" name="number" value="{{ selected_car_data[0] }}" disabled></td>
                 </tr>
                 <tr>
-                    <td>model_id</td>
+                    <th>model_id</th>
                     <td><input type="number" name="model_id" value="{{ selected_car_data[1] }}" disabled></td>
                 </tr>
                 <tr>
-                    <td>current zone</td>
+                    <th>current zone</th>
                     <td>{{ selected_car_data[2] }}</td>
                 </tr>
                 <tr>
-                    <td>zone</td>
+                    <td>move to ...</td>
                     <td>
                     <select name="zone_id" required>
                         {% for zone in zone_data %}

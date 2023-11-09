@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Update Zone - Blue Car Sharing</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style_manager.css">
     </head>
     <body>
         <h1>Update Zone</h1>
@@ -10,15 +11,15 @@
         <form action="/manager/managezone/update/process/{{ selected_zone_data[0] }}" method="POST">
             <table>
                 <tr>
-                    <td>ID (Cannot Edit)</td>
-                    <td><input type="text" name="id" value="{{ selected_zone_data[0] }}" disabled></td>
+                    <th>ID</th>
+                    <td><input type="text" name="id" value="{{ selected_zone_data[0] }}" disabled> (Cannot Edit)</td>
                 </tr>
                 <tr>
-                    <td>City</td>
+                    <th>City</th>
                     <td><input type="text" name="city" value="{{ selected_zone_data[1] }}" required></td>
                 </tr>
                 <tr>
-                    <td>Name</td>
+                    <th>Name</th>
                     <td><input type="text" name="name" value="{{ selected_zone_data[2] }}" required></td>
                 </tr>
             </table>
