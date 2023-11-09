@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Move Car - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Move Car</h1>
+        <hr>
+        <form action="/manager/managecar/move/process/{{ selected_car_data[0] }}" method="POST">
+            <table>
+                <tr>
+                    <td>number</td>
+                    <td><input type="text" name="number" value="{{ selected_car_data[0] }}" disabled></td>
+                </tr>
+                <tr>
+                    <td>model_id</td>
+                    <td><input type="number" name="model_id" value="{{ selected_car_data[1] }}" disabled></td>
+                </tr>
+                <tr>
+                    <td>current zone</td>
+                    <td>{{ selected_car_data[2] }}</td>
+                </tr>
+                <tr>
+                    <td>zone</td>
+                    <td>
+                    <select name="zone_id" required>
+                        {% for zone in zone_data %}
+                        <option value="{{ zone[0] }}">{{ zone[0] }}, {{ zone[1] }}, {{ zone[2] }}</option>
+                        {% endfor %}
+                    </select>
+                    </td>   
+                </tr>
+            </table>
+            <br>
+            <input type="submit" value="UPDATE">
+        </form>
+        <a href="/manager/managecar"><button>CANCEL</button></a>
+    </body>
+</html>

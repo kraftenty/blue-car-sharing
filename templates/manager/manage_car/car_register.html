@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Register Car - Blue Car Sharing</title>
+    </head>
+    <body> 
+        <h1>Register Car</h1>
+        <hr>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <!-- End of Flash messages -->
+        <form method="post" action="/manager/managecar/register/process">
+            <table>
+                <tr>
+                    <td>number</td>
+                    <!--min:0이상, step: 정수로만-->
+                    <td>
+                        <input type="text" name="first_number" required minlength="1" maxlength="3">
+                        <select name="middle_number" required>
+                            <option value="HA">HA</option>
+                            <option value="HEO">HEO</option>
+                            <option value="HO">HO</option>
+                        </select>
+                        <input type="text" name="last_number" required minlength="4" maxlength="4">
+                    </td>
+                </tr>
+                <tr>
+                    <td>model</td>
+                    <td>
+                    <select name="model_id" required>
+                        {% for model in model_data %}
+                        <option value="{{ model[0] }}">{{ model[0] }}, {{ model[1] }}, {{ model[2] }}</option>
+                        {% endfor %}
+                    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>zone</td>
+                    <td>
+                    <select name="zone_id" required>
+                        {% for zone in zone_data %}
+                        <option value="{{ zone[0] }}">{{ zone[0] }}, {{ zone[1] }}, {{ zone[2] }}</option>
+                        {% endfor %}
+                    </select>
+                    </td>   
+                </tr>
+            </table>
+            <input type="submit" value="Register">
+        </form>
+        <a href="/manager/managecar"><button>Back</button></a>
+    </body>
+</html>

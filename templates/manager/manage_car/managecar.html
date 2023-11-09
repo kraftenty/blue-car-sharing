@@ -26,15 +26,15 @@
     <body>
         <h1>Manage Car</h1>
         <hr>
-        <a href="/manager/managecar/create"><button>CREATE Car</button></a><br>
+        <a href="/manager/managecar/register"><button>REGISTER new Car</button></a><br>
         <div class="scrollable-table">
             <table>
             <thead>
                 <tr>
                     <th>number</th>
-                    <th>model_id</th>
-                    <th>zone_id</th>
-                    <th>UPDATE</th>
+                    <th>Model (model_id, manufacturer, name)</th>
+                    <th>Current Zone (zone_id, city, name)</th>
+                    <th>MOVE</th>
                     <th>DELETE</th>
                 </tr>
             </thead>
@@ -42,9 +42,9 @@
                 {% for col in car_data %}
                 <tr>
                     <td>{{ col[0] }}</td>
-                    <td>{{ col[1] }}</td>
-                    <td>{{ col[2] }}</td>
-                    <td><a href="/manager/managecar/update/{{ col[0] }}"><button>UPDATE</button></a></td>
+                    <td>{{ col[1] }}, {{ col[2] }} {{ col[3] }}</td>
+                    <td>{{ col[4] }}, {{ col[5] }}, {{ col[6] }}</td>
+                    <td><a href="/manager/managecar/move/{{ col[0] }}"><button>MOVE</button></a></td>
                     <td><button onclick="confirmDelete('{{ col[0] }}')">DELETE</button></td>
                 </tr>
                 {% endfor %}
@@ -52,11 +52,22 @@
             </table>
         </div>
         <a href="/manager"><button>Back</button></a>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <!-- End of Flash messages -->
         <script>
             function confirmDelete(number) {
                 var confirmation = confirm(`Are you sure you want to delete car '${number}'?`);
                 if (confirmation) {
-                    window.location.href = "/manager/managecar/delete/" + numer;
+                    window.location.href = "/manager/managecar/delete/" + number;
                 }
             }
         </script>
