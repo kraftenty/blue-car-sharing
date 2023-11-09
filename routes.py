@@ -330,7 +330,7 @@ def root_user_findcar_select_number():
         conn = sqlite3.connect('data/data.db')
         cursor = conn.cursor()
         cursor.execute('''SELECT car.number, model.manufacturer, model.name, model.type,
-                          model.capacity, model.drive_range, model.price_per_day
+                          model.capacity, model.drive_range, model.price_per_day, model.id
                           FROM car
                           LEFT JOIN model ON car.model_id = model.id
                           WHERE car.number=?
