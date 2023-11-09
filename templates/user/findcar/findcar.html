@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Find Car - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Find Car</h1>
+        <hr>
+        <form method="GET" action="/user/findcar/select" onsubmit="return validateDates()">
+            <table>
+                <tr>
+                    <td>Select City</td>
+                    <td>
+                        <select id="city" required onchange="updateZones()">
+                            <option value="" disabled selected>Select City</option>
+                            {% for city in unique_cities %}
+                            <option value="{{ city }}">{{ city }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>   
+                </tr>
+                <tr>
+                    <td>Select Zone</td>
+                    <td>
+                        <select id="zone" name="zone_id" required>
+                            <!-- Zone options will be dynamically populated here -->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Start Date</td>
+                    <td><input type="date" name="start_date" id="start_date" required></td>
+                </tr>
+                <tr>
+                    <td>End Date</td>
+                    <td><input type="date" name="end_date" id="end_date" required onchange="calc()"></td>
+                </tr>                 
+            </table>
+            <input type="submit" value="Search">
+        </form>
+        <a href="/user"><button>Back</button><br></a>
+        <script>
+            function updateZones() {
+                var selectedCity = document.getElementById("city").value;
+                var zoneSelect = document.getElementById("zone");
+                
+                zoneSelect.innerHTML = "";
+        
+                // jinja2 문법임. 오류가 아님.
+                var zoneData = {{ zone_data | tojson | safe }};
+                zoneData.forEach(function(zone) {
+                    if (zone[1] === selectedCity) {
+                        var option = document.createElement("option");
+                        option.value = zone[0];
+                        option.textContent = zone[2];
+                        zoneSelect.appendChild(option);
+                    }
+                });
+            }
+            function validateDates() {
+                var startDate = new Date(document.getElementById("start_date").value);
+                var endDate = new Date(document.getElementById("end_date").value);
+                if (startDate > endDate) {
+                    alert("End Date should be later than Start Date.");
+                    return false; // 폼 제출 방지
+                }
+                return true; // 폼 제출 허용
+            }
+            dateZones();
+        </script>
+    </body>
+</html>

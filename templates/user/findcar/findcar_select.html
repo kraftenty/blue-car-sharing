@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Select BlueCar - Blue Car Sharing</title>
+        <style>
+            .scrollable-table {
+                max-height: 400px; /* 원하는 높이로 조정하세요 */
+                overflow-y: auto;
+                width: 100%;
+                table-layout: fixed;
+            }
+            table {
+                border : 1px solid black;
+                border-collapse : collapse;
+                width: 100%; /* 테이블의 너비를 100%로 설정하여 화면 너비에 맞게 확장 */
+            }
+            th, td {
+                border: 1px solid black;
+                width: auto; /* 각 셀의 너비를 자동 조정 (내용에 따라) */
+                padding: 8px; /* 셀의 패딩을 추가할 수 있음 (선택 사항) */
+                text-align: center; /* 셀 내용을 가운데 정렬 (선택 사항) */
+            }
+          </style>
+    </head>
+    <body>
+        <h1>Select Your BlueCar</h1>
+        <hr>
+        <h3>Available BlueCars ...</h3>
+        <div class="scrollable-table">
+            <table>
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>BlueCar</th>
+                    <th>Type</th>
+                    <th>Max. Capacity</th>
+                    <th>Drive Range</th>
+                    <th>Price Per Day</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in available_car_data %}
+                <tr>
+                    <td>{{ car[0] }}</td>
+                    <td>{{ car[1] }} {{ car[2] }}</td>
+                    <td>{{ car[3] }}</td>
+                    <td>{{ car[4] }}</td>
+                    <td>{{ car[5] }}</td>
+                    <td>{{ car[6] }}</td>
+                    <td>
+                        <form action="/user/findcar/select/proceed" method="post">
+                            <input type="hidden" name="number" value="{{ car[0] }}">
+                            <input type="hidden" name="start_date" value="{{ reservation_date_data[0] }}">
+                            <input type="hidden" name="end_date" value="{{ reservation_date_data[1] }}">
+                            <input type="hidden" name="zone_id" value="{{ car[7] }}">
+                            <input type="submit" value="SELECT">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        <a href="/user"><button>Back</button></a>
+    </body>
+</html>

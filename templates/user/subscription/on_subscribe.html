@@ -8,7 +8,16 @@
         <h1>You are subscribing BLUEPASS!</h1>
         <hr>
         You are receiving an unlimited 50% discount by subscribing.<br><br>
-        2,000 won per month. <a href="/user/subscription/process"><button>Unsubscribe</button></a><br>
+        2,000 won per month. 
+        <button onclick="conf()">Unsubscribe</button><br>
         <a href="/user"><button>Back</button></a>
+        <script>
+            function conf() {
+                if (confirm("Are you sure you want to unsubscribe?")) {
+                    alert("Your subscription has been canceled.")
+                    window.location.href = "/user/subscription/process";
+                }
+            }
+        </script>
     </body>
 </html>

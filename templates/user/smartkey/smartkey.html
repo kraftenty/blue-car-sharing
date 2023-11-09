@@ -7,6 +7,26 @@
     <body>
         <h1>Smart key</h1>
         <hr>
+        <h3>Your BlueCar</h3>
+        <ul>
+            <li>Car : {{ model_data[1] }} {{ model_data[2] }}</li>
+            <li>Car Number : {{ reservation_data[1] }}</li>
+            <li>Available Days : {{ reservation_data[3] }} ~ {{ reservation_data[4] }}</li>
+            <li>The amount paid : {{ reservation_data[5] }} WON</li>
+        </ul>
+        <h3>Smart Key</h3>
+        <button onclick="alert('Car Unlocked!')">UNLOCK</button>
+        <button onclick="alert('Car Locked!')">LOCK</button>
+        <br><br>
+        <button onclick="confirmCancel()">Cancel Reservation</button>
         <a href="/user"><button>Back</button></a>
+        <script>
+            function confirmCancel() {
+                if (confirm("Are you sure you want to cancel your reservation?")) {
+                    alert("Your reservation has been canceled.")
+                    window.location.href = "/user/smartkey/cancelreservation";
+                }
+            }
+        </script>
     </body>
 </html>

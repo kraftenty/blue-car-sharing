@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Manage Repairment - Blue Car Sharing</title>
+        <style>
+            .scrollable-table {
+                max-height: 400px; /* 원하는 높이로 조정하세요 */
+                overflow-y: auto;
+                width: 100%;
+                table-layout: fixed;
+            }
+            table {
+                border : 1px solid black;
+                border-collapse : collapse;
+                width: 100%; /* 테이블의 너비를 100%로 설정하여 화면 너비에 맞게 확장 */
+            }
+            th, td {
+                border: 1px solid black;
+                width: auto; /* 각 셀의 너비를 자동 조정 (내용에 따라) */
+                padding: 8px; /* 셀의 패딩을 추가할 수 있음 (선택 사항) */
+                text-align: center; /* 셀 내용을 가운데 정렬 (선택 사항) */
+            }
+          </style>
+    </head>
+    <body>
+        <h1>Manage Repairment</h1>
+        <hr>
+        <a href="/manager/managerepairment/add"><button>Add Repairment</button></a>
+        <div class="scrollable-table">
+            <table>
+            <thead>
+                <tr>
+                    <th>number</th>
+                    <th>reason</th>
+                    <th>DELETE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for col in repairment_data %}
+                <tr>
+                    <td>{{ col[0] }}</td>
+                    <td>{{ col[1] }}</td>
+                    <td><button onclick="confirmDelete('{{ col[0] }}')">DELETE</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        <a href="/manager"><button>Back</button></a>
+        <script>
+            function confirmDelete(number) {
+                var confirmation = confirm(`Are you sure you want to delete repairment status for '${number}'?`);
+                if (confirmation) {
+                    window.location.href = "/manager/managerepairment/delete/" + number;
+                }
+            }
+        </script>
+    </body>
+</html>

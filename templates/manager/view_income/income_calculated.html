@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Calculated Income - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Calculated Income</h1>
+        <hr>
+        from <i>{{ date_information[0] }}</i> to <i>{{ date_information[1] }}</i>...<br>
+        <ul>
+            <li>Total Reservation Income : {{  total_income[0] }} WON</li>
+            <li>Total Subscription Income : {{  total_subscriber[0]*2000 }} WON</li>
+            <li>SUM : {{ total_income[0] + total_subscriber[0]*2000 }} WON</li>
+        </ul>
+        <br>
+        <a href="/manager/viewincome"><button>Back</button></a>
+    </body>
+</html>

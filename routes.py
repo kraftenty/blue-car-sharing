@@ -232,9 +232,147 @@ def root_user_subscription_process():
 @main_bp.route('/user/smartkey')
 def root_user_smartkey():
     if session.get('user_session'):
-        return render_template('user/smartkey/smartkey.html')
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        user_id = session['user_session'][0]
+        cursor.execute('''SELECT * FROM reservation WHERE user_id=?''', (user_id,))
+        reservation_data = cursor.fetchone()
+        if reservation_data is None:
+            conn.close()
+            return render_template('user/smartkey/noreservation.html')
+        cursor.execute('''SELECT * FROM car WHERE number=?''', (reservation_data[1],))
+        car_data = cursor.fetchone()
+        cursor.execute('''SELECT * FROM model WHERE id=?''', (car_data[1],))
+        model_data = cursor.fetchone()
+        conn.close()
+        return render_template('user/smartkey/smartkey.html',
+            reservation_data=reservation_data, car_data=car_data, model_data=model_data)
     else:
         return render_template('user/auth/login_form.html')
+
+@main_bp.route('/user/smartkey/cancelreservation')
+def root_user_smartkey_cancelreservation():
+    if session.get('user_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        user_id = session['user_session'][0]
+        cursor.execute('''DELETE FROM reservation WHERE user_id=?''', (user_id,))
+        conn.commit()
+        conn.close()
+        return redirect('/user/smartkey',)
+    else:
+        return render_template('user/auth/login_form.html')
+
+# findcar
+@main_bp.route('/user/findcar')
+def root_user_findcar():
+    if session.get('user_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT start_date
+                          FROM reservation 
+                          WHERE user_id=?''', (session['user_session'][0],)
+        )
+        existing_reservation_start_date = cursor.fetchall()
+
+        
+        if existing_reservation_start_date:
+            conn.close()
+            return render_template('user/findcar/findcar_alreadyreserved.html',
+                    existing_reservation_start_date=existing_reservation_start_date)
+        else:
+            cursor.execute('''SELECT * FROM zone''')
+            zone_data = cursor.fetchall()
+            unique_cities = set(zone[1] for zone in zone_data)
+            unique_cities = list(unique_cities)
+            unique_cities.sort()
+            conn.close()
+            return render_template('user/findcar/findcar.html', 
+                    zone_data=zone_data, unique_cities=unique_cities)
+    else:
+        return render_template('user/auth/login_form.html')
+
+@main_bp.route('/user/findcar/select', methods=['GET'])
+def root_user_findcar_select():
+    if session.get('user_session'):
+        zone_id = request.args.get('zone_id')
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT car.number, model.manufacturer, model.name, model.type,
+                   model.capacity, model.drive_range, model.price_per_day, car.zone_id
+            FROM car
+            LEFT JOIN reservation ON car.number = reservation.car_number
+            LEFT JOIN repairment ON car.number = repairment.number
+            LEFT JOIN model ON car.model_id = model.id
+            WHERE car.zone_id=?
+                AND repairment.number IS NULL
+                AND (reservation.car_number IS NULL OR (reservation.start_date > ? OR reservation.end_date < ?))
+        ''', (zone_id, end_date, start_date))
+        available_car_data = cursor.fetchall()
+        conn.close()
+        reservation_date_data = (start_date, end_date)
+        return render_template('user/findcar/findcar_select.html',
+                available_car_data=available_car_data, reservation_date_data=reservation_date_data)
+    else:
+        return render_template('user/auth/login_form.html')
+
+@main_bp.route('/user/findcar/select/proceed', methods=['POST'])
+def root_user_findcar_select_number():
+    if session.get('user_session'):
+        number = request.form['number']
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
+        zone_id = request.form['zone_id']
+        reservation_date_data = (start_date, end_date)
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT car.number, model.manufacturer, model.name, model.type,
+                          model.capacity, model.drive_range, model.price_per_day
+                          FROM car
+                          LEFT JOIN model ON car.model_id = model.id
+                          WHERE car.number=?
+                       ''', (number,))
+        selected_car_data = cursor.fetchone()
+        cursor.execute('''SELECT city, name FROM zone WHERE id=?''', (zone_id,))
+        selected_zone_data = cursor.fetchone()
+        cursor.execute('''SELECT * FROM subscribe WHERE user_id=?''', (session['user_session'][0],))
+        subscribe_data = cursor.fetchone()
+        if subscribe_data is None:
+            subscribe_data = (1, 'You are Not a subscriber')
+        else:
+            subscribe_data = (2, 'You are Subscriber! Enjoy 50 percent discount')
+        conn.close()
+        return render_template('user/findcar/findcar_select_number.html',
+                selected_car_data=selected_car_data,
+                selected_zone_data=selected_zone_data,
+                reservation_date_data=reservation_date_data,
+                subscribe_data=subscribe_data)
+    else:
+        return render_template('user/auth/login_form.html')
+
+@main_bp.route('/user/findcar/select/proceed/process', methods=['POST'])
+def root_user_findcar_select_proceed_process():
+    if session.get('user_session'):
+        if request.method == 'POST':
+            car_number = request.form['car_number']
+            user_id = session['user_session'][0]
+            start_date = request.form['start_date']
+            end_date = request.form['end_date']
+            tot_price = request.form['tot_price']
+            conn = sqlite3.connect('data/data.db')
+            cursor = conn.cursor()
+            cursor.execute('''INSERT INTO reservation (car_number, user_id, start_date, end_date, tot_price)
+                              VALUES (?, ?, ?, ?, ?)''',
+                           (car_number, user_id, start_date, end_date, tot_price))
+            conn.commit()
+            conn.close()
+            return redirect('/user')
+    else:
+        return render_template('user/auth/login_form.html')
+
 
 # ------------------------------------------ manager
 # manager auth
@@ -648,5 +786,117 @@ def root_manager_managecar_register_process():
             conn.commit()
             conn.close()
             return redirect('/manager/managecar')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+# manager manage repairment
+@main_bp.route('/manager/managerepairment')
+def root_manager_managerepairment():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT * FROM repairment
+        ''')
+        repairment_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_repairment/managerepairment.html',
+                                repairment_data=repairment_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managerepairment/delete/<string:number>', methods=['GET'])
+def root_manager_managerepairment_delete(number):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''DELETE FROM repairment WHERE number=?''', (number,))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managerepairment')
+    else:   
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managerepairment/add')
+def root_manager_managerepairment_add():
+    if session.get('manager_session'):
+        return render_template('manager/manage_repairment/repairment_add.html')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managerepairment/add/process', methods=['POST'])
+def root_manager_managerepairment_add_process():
+    if session.get('manager_session') and request.method == 'POST':
+        first_number = request.form['first_number']
+        middle_number = request.form['middle_number']
+        last_number = request.form  ['last_number']
+        number = first_number + middle_number + last_number
+        reason = request.form['reason']
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''INSERT INTO repairment VALUES (?, ?)''',
+            (number, reason)
+        )
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managerepairment')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+# manager manage reservation
+@main_bp.route('/manager/managereservation')
+def root_manager_managereservation():
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT * FROM reservation
+        ''')
+        reservation_data = cursor.fetchall()
+        conn.close()
+        return render_template('manager/manage_reservation/managereservation.html',
+                                reservation_data=reservation_data)
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/managereservation/delete/<int:id>', methods=['GET'])
+def root_manager_managereservation_delete(id):
+    if session.get('manager_session'):
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''DELETE FROM reservation WHERE id=?''', (id,))
+        conn.commit()
+        conn.close()
+        return redirect('/manager/managereservation')
+    else:   
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/viewincome')
+def root_manager_viewincome():
+    if session.get('manager_session'):
+        return render_template('manager/view_income/viewincome.html')
+    else:
+        return render_template('manager/auth/login_form.html')
+
+@main_bp.route('/manager/viewincome/calculated', methods=['POST'])
+def root_manager_viewincome_calculated():
+    if session.get('manager_session') and request.method == 'POST':
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
+        date_information = (start_date, end_date)
+        conn = sqlite3.connect('data/data.db')
+        cursor = conn.cursor()
+        cursor.execute('''SELECT SUM(tot_price)
+                          FROM reservation 
+                          WHERE start_date >= ? AND end_date <= ?''', (start_date, end_date))
+        total_income = cursor.fetchone()
+        cursor.execute('''SELECT COUNT(subscribe.user_id)
+                          FROM subscribe''')
+        total_subscriber = cursor.fetchone()
+        conn.close()
+        return render_template('manager/view_income/income_calculated.html',
+                                total_income=total_income,
+                                total_subscriber=total_subscriber,
+                                date_information=date_information)
     else:
         return render_template('manager/auth/login_form.html')

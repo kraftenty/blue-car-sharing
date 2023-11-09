@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>View Income - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>View Income</h1>
+        <hr>
+        <form method="post" action="/manager/viewincome/calculated" onsubmit="return validateDates()">
+            From : <input type="date" name="start_date" id="start_date" required><br>
+            To : <input type="date" name="end_date" id="end_date" required><br>
+            <input type="submit" value="Search">
+        </form>
+        <br>
+        <a href="/manager"><button>Back</button></a>
+
+        <script>
+            function validateDates() {
+                var startDate = new Date(document.getElementById("start_date").value);
+                var endDate = new Date(document.getElementById("end_date").value);
+                if (startDate > endDate) {
+                    alert("End Date should be later than Start Date.");
+                    return false; // 폼 제출 방지
+                }
+                return true; // 폼 제출 허용
+            }
+        </script>
+    </body>
+</html>

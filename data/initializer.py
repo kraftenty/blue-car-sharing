@@ -76,8 +76,7 @@ def initialize():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS repairment (
             number VARCHAR PRIMARY KEY NOT NULL,
-            start_date DATE NOT NULL,
-            end_date DATE NOT NULL,
+            reason VARCHAR NOT NULL,
             FOREIGN KEY (number) REFERENCES car(number)
         );
     ''')

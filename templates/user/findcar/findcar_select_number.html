@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Make a Reservation - Blue Car Sharing</title>
+    </head>
+    <body>
+        <h1>Make a Reservation</h1>
+        <hr>
+        <h3>This is the BlueCar for you</h3>
+        <table>
+            <tr>
+                <th>City</th>
+                <td>&nbsp;{{ selected_zone_data[0] }}</td>
+            </tr>
+            <tr>
+                <th>Zone</th>
+                <td>&nbsp;{{ selected_zone_data[1] }}</td>
+            </tr>
+        </table>
+        <br>
+        <table>
+            <tr>
+                <th>Number</th>
+                <td>&nbsp;{{ selected_car_data[0] }}</td>
+            </tr>
+            <tr>
+                <th>BlueCar</th>
+                <td>&nbsp;{{ selected_car_data[1] }} {{ selected_car_data[2] }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>&nbsp;{{ selected_car_data[3] }}</td>
+            </tr>
+            <tr>
+                <th>Capacity</th>
+                <td>&nbsp;{{ selected_car_data[4] }}</td>
+            </tr>
+            <tr>
+                <th>Drive Range</th>
+                <td>&nbsp;{{ selected_car_data[5] }}km per full charge</td>
+            </tr>
+        </table>
+        <br>
+        <form method="POST" action="/user/findcar/select/proceed/process"
+            onsubmit="document.getElementById('hidden_total_price').value = calc();
+            alert('Successfully Reserved! Thank You For your Reservation.');" >
+            <table>
+                <tr>
+                    <td>Start Date</td>
+                    <td><input type="date" name="start_date" id="start_date" value="{{ reservation_date_data[0] }}" required readonly></td>
+                </tr>
+                <tr>
+                    <td>End Date</td>
+                    <td><input type="date" name="end_date" id="end_date" value="{{ reservation_date_data[1] }}" required readonly></td>
+                </tr>
+            </table>
+            <br>
+            <p>
+                <em>
+                    {{ subscribe_data[1] }}<br>
+                    Price Per Day : <span id="price_per_day">{{ selected_car_data[6] // subscribe_data[0] }}</span> WON<br>
+                    Total Price : <span id="tot_price">-</span> WON
+                </em>
+            </p>
+            <br>
+            <input type="hidden" name="car_number" value="{{ selected_car_data[0] }}">
+            <input type="hidden" name="tot_price" id="hidden_total_price" value="">
+            <input type="submit" value="Reserve">
+        </form>
+        <a href="/user/findcar"><button>Back</button><br></a>
+        <script>
+            function calc() {
+                var startDate = new Date(document.getElementById("start_date").value);
+                var endDate = new Date(document.getElementById("end_date").value);
+                var between = Math.abs(endDate - startDate);
+                var days = Math.floor(between / (1000*60*60*24) + 1);
+                var tot_price = document.getElementById("tot_price");
+                var price_per_day = document.getElementById("price_per_day").innerHTML;
+                tot_price.innerHTML = days * price_per_day;
+                return days * price_per_day;
+            }
+            calc()
+            </script>
+    </body>
+</html>
