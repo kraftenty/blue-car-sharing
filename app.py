@@ -8,6 +8,7 @@ import manager_managecar_router
 import manager_managerepairment_router
 import manager_managereservation_router
 import manager_viewincome_router
+import manager_manageuser_router
 import user_auth_router
 import user_findcar_router
 import user_smartkey_router
@@ -28,6 +29,7 @@ app.register_blueprint(manager_managesubscription_router.manager_managesubscript
 app.register_blueprint(manager_managecar_router.manager_managecar_bp)
 app.register_blueprint(manager_managerepairment_router.manager_managerepairment_bp)
 app.register_blueprint(manager_managereservation_router.manager_managereservation_bp)
+app.register_blueprint(manager_manageuser_router.manager_manageuser_bp)
 app.register_blueprint(manager_viewincome_router.manager_viewincome_bp)
 app.register_blueprint(user_auth_router.user_auth_bp)
 app.register_blueprint(user_findcar_router.user_findcar_bp)
